@@ -49,7 +49,23 @@ def _n_jobs(cfg: Config) -> int:
     env = os.environ.get("ANALISADOR_N_JOBS")
     if env:
         return max(1, int(env))
-    return max(1, cpu_count()) if cfg.n_jobs <= 0 else cfg.n_jobs
+    n = max(1, cpu_count()) if cfg.n_jobs <= 0 else cfg.n_jobs
+    mem = _memoria_limite_gb()
+    if mem is not None:  # cada processo extra custa ~0,6 GB; reserva ~1 GB para o app principal
+        n = min(n, max(1, int((mem - 1.0) / 0.6)))
+    return n
+
+
+def _memoria_limite_gb() -> float | None:
+    """Limite de memória do container (cgroup v2 ou v1), se houver. None fora de containers."""
+    for arq in ("/sys/fs/cgroup/memory.max", "/sys/fs/cgroup/memory/memory.limit_in_bytes"):
+        try:
+            valor = open(arq).read().strip()
+        except OSError:
+            continue
+        if valor.isdigit() and int(valor) < 1 << 50:
+            return int(valor) / 1024**3
+    return None
 
 
 def _tecnico(px: pd.DataFrame, X: pd.DataFrame) -> dict[str, float]:
