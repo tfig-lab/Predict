@@ -1,4 +1,4 @@
-# Analisador Preditivo de Ações
+# Predict - Thomfig$420 (v0.2.0)
 
 Analisa uma ação da B3 ou dos EUA e, para cada horizonte (1 dia, 1 semana, 2 semanas, 1 mês, 3 meses e 6 meses), entrega:
 
@@ -8,8 +8,6 @@ Analisa uma ação da B3 ou dos EUA e, para cada horizonte (1 dia, 1 semana, 2 s
 - um **grau de confiabilidade de 0 a 100**, medido fora da amostra.
 
 O princípio que guia tudo: **o retorno de ações é quase imprevisível; volatilidade e regime são bem mais previsíveis.** Por isso a ferramenta mede com rigor quanto o modelo realmente acerta. Quando não há vantagem sobre os baselines, ela diz *"Sem vantagem estatística sobre o acaso neste horizonte"* em vez de inventar confiança.
-
-> Ferramenta educacional. **Não é recomendação de investimento.**
 
 ---
 

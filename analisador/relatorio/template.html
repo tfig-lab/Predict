@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>__TITULO__ · Analisador preditivo</title>
+<title>__TITULO__ · Predict - Thomfig$420</title>
 <script>/*__PLOTLY__*/</script>
 <style>
 :root {
@@ -145,10 +145,7 @@ tr.destaque td { font-weight: 600; }
     <div class="grid2" style="margin-top:8px"><div class="tabela"><table id="tPesos"></table></div><div class="tabela"><table id="tScore"></table></div></div>
   </section>
 
-  <section class="panel"><h2><span class="num">10</span>Aviso</h2>
-    <p>Ferramenta estatística <b>educacional</b>. <b>Não é recomendação de investimento.</b> O modelo usa apenas preços, volume e indicadores de mercado; não enxerga notícias, balanços, eventos corporativos ou mudanças estruturais futuras. Desempenho passado, mesmo validado fora da amostra, não garante desempenho futuro.</p>
-    <p class="disclaimer" id="rodape"></p>
-  </section>
+  <p class="disclaimer" id="rodape"></p>
 </div>
 
 <script>
@@ -175,11 +172,12 @@ function layout(extra = {}) {
     paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
     font: { family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: ink2, size: 12 },
     margin: { l: 60, r: 16, t: 10, b: 40 }, legend: { orientation: "h", y: 1.1, x: 0 },
+    dragmode: false,  // no celular, arrastar o dedo rola a página em vez de dar zoom
     xaxis: { ...eixo }, yaxis: { ...eixo },
     hoverlabel: { bgcolor: css("--surface"), bordercolor: css("--axis"), font: { color: css("--ink") } },
   }, extra);
 }
-const CFG = { displayModeBar: false, responsive: true };
+const CFG = { displayModeBar: false, responsive: true, scrollZoom: false };
 const nomeRegime = (e, k) => e == null ? null : (e === 0 ? "Queda" : (e === k - 1 ? "Alta" : "Lateral"));
 
 // ---------------------------------------------------------------- cabeçalho e resumo
@@ -232,7 +230,7 @@ function tabelasFixas() {
 
   $("seletor").innerHTML = '<span>Horizonte para as seções 6 a 9:</span>' + H.map((h, i) => `<button type="button" data-i="${i}" aria-pressed="${i === sel}">${esc(h.nome)}</button>`).join("");
   $("seletor").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { sel = +b.dataset.i; tabelasFixas(); desenharHorizonte(); }));
-  $("rodape").textContent = `Gerado em ${D.gerado} · análise em ${Math.round(D.tempo)} s · retreino a cada ${D.config.passo} pregões${D.config.rapido ? " (modo rápido)" : ""}.`;
+  $("rodape").textContent = `Predict v${D.versao} · gerado em ${D.gerado} · análise em ${Math.round(D.tempo)} s · retreino a cada ${D.config.passo} pregões${D.config.rapido ? " (modo rápido)" : ""}.`;
 }
 
 // ---------------------------------------------------------------- gráficos gerais

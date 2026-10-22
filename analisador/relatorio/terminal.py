@@ -1,6 +1,7 @@
 """Saída em texto para o terminal."""
 from __future__ import annotations
 
+from analisador import __version__
 from analisador.relatorio import formato as fmt
 from analisador.tipos import ResultadoAnalise
 
@@ -79,5 +80,5 @@ def relatorio_terminal(r: ResultadoAnalise) -> str:
     ]
     if r.avisos:
         out += ["", "Avisos dos dados:"] + [f"  - {a}" for a in r.avisos]
-    out += ["", f"Tempo de análise: {r.tempo_total_s:.0f} s. Ferramenta educacional, não é recomendação de investimento.", ""]
+    out += ["", f"Predict v{__version__} · tempo de análise: {r.tempo_total_s:.0f} s.", ""]
     return "\n".join(out)

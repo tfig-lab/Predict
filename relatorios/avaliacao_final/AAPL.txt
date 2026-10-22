@@ -31,4 +31,4 @@ QLIKE menor = previsão de volatilidade melhor. n ef. = observações independen
 Avisos dos dados:
   - 18 retornos diários acima de 8 desvios robustos (mantidos; confira eventos)
 
-Tempo de análise: 47 s. Ferramenta educacional, não é recomendação de investimento.
+Tempo de análise: 47 s.

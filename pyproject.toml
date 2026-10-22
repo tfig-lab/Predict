@@ -1,7 +1,7 @@
 [project]
 name = "analisador"
-version = "0.1.0"
-description = "Analisador preditivo de ações com grau de confiabilidade mensurado fora da amostra"
+version = "0.2.0"
+description = "Predict - Thomfig$420: analisador preditivo de ações com grau de confiabilidade mensurado fora da amostra"
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
 dependencies = [

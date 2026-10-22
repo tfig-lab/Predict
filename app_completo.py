@@ -4,6 +4,7 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from analisador import NOME_APP, __version__
 from analisador.config import carregar_config
 from analisador.dados.busca import POPULARES, buscar_acoes
 from analisador.log import configurar_logging
@@ -11,7 +12,7 @@ from analisador.pipeline import analisar
 from analisador.relatorio import formato as fmt
 from analisador.relatorio.html import gerar_html
 
-st.set_page_config(page_title="Analisador preditivo de ações", layout="wide")
+st.set_page_config(page_title=f"{NOME_APP} v{__version__} · técnico", layout="wide")
 configurar_logging("WARNING")
 cfg_base = carregar_config()
 
@@ -49,9 +50,8 @@ def _rotulo(acao: dict) -> str:
     return f"{codigo} · {acao['nome']} ({acao['bolsa']})"
 
 
-st.title("Analisador preditivo de ações")
-st.caption("Tendência por horizonte com grau de confiabilidade medido fora da amostra. "
-           "Ferramenta educacional; não é recomendação de investimento.")
+st.title(f"{NOME_APP.replace('$', chr(92) + '$')} `v{__version__}`")
+st.caption("Dashboard técnico: tendência por horizonte com grau de confiabilidade medido fora da amostra.")
 
 busca = st.text_input("Buscar ação", placeholder="Nome ou código: Petrobras, WEG, BBAS3, Apple, NVDA…",
                       help="Busca no Yahoo Finance entre ações e ETFs da B3 e das bolsas dos EUA. Tecle Enter para buscar.")

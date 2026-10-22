@@ -32,4 +32,4 @@ Avisos dos dados:
   - 1 pregões com máxima/mínima incoerentes (ajustados)
   - 3 retornos diários acima de 8 desvios robustos (mantidos; confira eventos)
 
-Tempo de análise: 53 s. Ferramenta educacional, não é recomendação de investimento.
+Tempo de análise: 53 s.

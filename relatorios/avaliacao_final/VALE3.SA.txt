@@ -32,4 +32,4 @@ Avisos dos dados:
   - 1 picos isolados (salto e reversão no dia seguinte) removidos como erro de dado
   - 5 retornos diários acima de 8 desvios robustos (mantidos; confira eventos)
 
-Tempo de análise: 50 s. Ferramenta educacional, não é recomendação de investimento.
+Tempo de análise: 50 s.

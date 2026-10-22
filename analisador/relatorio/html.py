@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import plotly
 
+from analisador import __version__
 from analisador.features import NOMES
 from analisador.horizonte import NOMES_MODELOS
 from analisador.relatorio import formato as fmt
@@ -124,6 +125,7 @@ def gerar_html(r: ResultadoAnalise) -> str:
         "horizontes": horizontes,
         "tempo": r.tempo_total_s, "config": r.config_resumo,
         "gerado": datetime.now().strftime("%d/%m/%Y %H:%M"),
+        "versao": __version__,
     })
     html = TEMPLATE.read_text(encoding="utf-8")
     return (html.replace("__TITULO__", r.ticker)
