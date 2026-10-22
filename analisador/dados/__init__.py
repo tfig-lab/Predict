@@ -77,11 +77,12 @@ def carregar_dados(
             macro["SELIC"] = selic
         except Exception as e:
             avisos.append(f"Selic (SGS 432) indisponível ({e})")
-        try:
-            ipca = obter_com_cache(cache, "SGS_433", partial(_sgs, IPCA_MENSAL), 1e-9, offline=offline)["Close"]
-            macro["IPCA12M"] = ipca_12m_disponivel(ipca, cfg.dados.defasagem_ipca_dias)
-        except Exception as e:
-            avisos.append(f"IPCA (SGS 433) indisponível ({e})")
+        if "SELIC" in macro:  # se a API do BCB não respondeu para a Selic, não insiste no IPCA
+            try:
+                ipca = obter_com_cache(cache, "SGS_433", partial(_sgs, IPCA_MENSAL), 1e-9, offline=offline)["Close"]
+                macro["IPCA12M"] = ipca_12m_disponivel(ipca, cfg.dados.defasagem_ipca_dias)
+            except Exception as e:
+                avisos.append(f"IPCA (SGS 433) indisponível ({e})")
 
     caixa = pd.Series(0.0, index=px.index)
     try:

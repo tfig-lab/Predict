@@ -13,11 +13,12 @@ IPCA_MENSAL = 433
 INICIO_PADRAO = date(1995, 1, 1)
 
 
-def _get_com_retentativas(url: str, params: dict, tentativas: int = 4) -> requests.Response:
-    """A API do SGS oscila bastante; tenta de novo com espera crescente."""
+def _get_com_retentativas(url: str, params: dict, tentativas: int = 3) -> requests.Response:
+    """A API do SGS oscila bastante; tenta de novo com espera crescente. Tempo limite curto:
+    fora do Brasil a API às vezes não responde, e a análise segue sem Selic/IPCA."""
     for i in range(tentativas):
         try:
-            resp = requests.get(url, params=params, timeout=60)
+            resp = requests.get(url, params=params, timeout=15)
             if resp.status_code < 500:
                 return resp
         except requests.RequestException:

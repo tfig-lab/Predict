@@ -7,7 +7,7 @@ from typing import Callable
 
 import numpy as np
 import pandas as pd
-from joblib import Parallel, delayed
+from joblib import Parallel, cpu_count, delayed
 
 from analisador.config import Config
 from analisador.dados import DadosAtivo, carregar_dados
@@ -43,6 +43,15 @@ def preparar_matriz(dados: DadosAtivo, cfg: Config, n_jobs: int) -> tuple[pd.Dat
     return X, g_on, h_on
 
 
+def _n_jobs(cfg: Config) -> int:
+    """Processos em paralelo. ANALISADOR_N_JOBS sobrepõe o config; a contagem do joblib respeita
+    limites de CPU de containers (em nuvem, os.cpu_count() enxerga a máquina inteira)."""
+    env = os.environ.get("ANALISADOR_N_JOBS")
+    if env:
+        return max(1, int(env))
+    return max(1, cpu_count()) if cfg.n_jobs <= 0 else cfg.n_jobs
+
+
 def _tecnico(px: pd.DataFrame, X: pd.DataFrame) -> dict[str, float]:
     u = X.iloc[-1]
     return {
@@ -64,7 +73,7 @@ def analisar(
     t0 = time.time()
     fixar_sementes(cfg.semente)
     horizontes = horizontes or cfg.horizontes
-    n_jobs = (os.cpu_count() or 1) if cfg.n_jobs <= 0 else cfg.n_jobs
+    n_jobs = _n_jobs(cfg)
 
     dados = carregar_dados(ticker, cfg, inicio=inicio, offline=offline, pasta_cache=pasta_cache)
     log.info(f"{dados.ticker}: {len(dados.px)} pregões de {dados.px.index[0]:%d/%m/%Y} a {dados.px.index[-1]:%d/%m/%Y}")

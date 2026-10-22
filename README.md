@@ -40,6 +40,22 @@ Dê dois cliques em **`ABRIR_ANALISADOR.bat`**, ou rode `uv run streamlit run ap
 
 O dashboard técnico completo continua disponível em `uv run streamlit run app_completo.py`.
 
+### Publicar online (Streamlit Community Cloud, gratuito)
+
+1. Acesse https://share.streamlit.io e entre com a conta do GitHub.
+2. Clique em **Create app → Deploy a public app from GitHub** e preencha:
+   - Repository: `tfig-lab/Predict`
+   - Branch: `main`
+   - Main file path: `app.py`
+3. Em **Advanced settings**, escolha **Python 3.12**, porque o `hmmlearn` não tem binário para 3.13 ou mais novo. Opcional: em *Secrets*, `ANALISADOR_N_JOBS = "2"` limita os processos paralelos se faltar memória.
+4. Clique em **Deploy**. A primeira instalação leva alguns minutos; as dependências vêm do `requirements.txt`.
+
+**Limitações do plano gratuito:**
+- a CPU é modesta: cada análise leva de 1 a 3 minutos no modo rápido;
+- o app "dorme" depois de um tempo sem acessos e acorda no clique seguinte;
+- o Yahoo Finance às vezes limita requisições vindas de servidores em nuvem;
+- a API do Banco Central pode não responder fora do Brasil; nesse caso a análise segue sem Selic e IPCA, com aviso.
+
 ### Linha de comando
 
 ```bash

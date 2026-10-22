@@ -30,8 +30,8 @@ def _buscar(texto: str) -> list[dict]:
 
 
 @st.cache_resource(show_spinner=False, ttl=6 * 3600, max_entries=8)
-def _analisar(ticker: str):
-    return analisar(ticker, carregar_config(), horizontes=list(HORIZONTES))
+def _analisar(ticker: str, rapido: bool):
+    return analisar(ticker, carregar_config(rapido=rapido), horizontes=list(HORIZONTES))
 
 
 def _rotulo_acao(a: dict) -> str:
@@ -63,15 +63,19 @@ else:
     opcoes = [{"simbolo": s, "nome": n, "bolsa": "B3" if s.endswith(".SA") else "EUA"} for s, n in POPULARES]
 acao = c2.selectbox("Ação", opcoes, format_func=_rotulo_acao, index=0 if opcoes else None, disabled=not opcoes)
 
-if st.button("Rodar modelos", type="primary", disabled=not acao):
-    st.session_state["ticker"] = acao["simbolo"]
+b1, b2 = st.columns([1, 4])
+rapido = b2.checkbox("Modo rápido", value=True,
+                     help="Retreina os modelos a cada 3 meses em vez de todo mês: cerca de 2× mais rápido, "
+                          "com previsões passadas um pouco menos atualizadas.")
+if b1.button("Rodar modelos", type="primary", disabled=not acao):
+    st.session_state["ticker"] = (acao["simbolo"], rapido)
 if "ticker" not in st.session_state:
     st.stop()
 
-ticker = st.session_state["ticker"]
-with st.spinner(f"Rodando os modelos em {ticker.removesuffix('.SA')} (cerca de 1 minuto na primeira vez)…"):
+ticker, rapido_usado = st.session_state["ticker"]
+with st.spinner(f"Rodando os modelos em {ticker.removesuffix('.SA')} (de 1 a 3 minutos na primeira vez)…"):
     try:
-        r = _analisar(ticker)
+        r = _analisar(ticker, rapido_usado)
     except Exception as e:
         st.error(f"Não foi possível analisar {ticker}: {e}")
         st.stop()
