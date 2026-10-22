@@ -1,0 +1,35 @@
+
+Vale S.A. (VALE3.SA) · R$ 64,03 em 21/10/2026
+Retornos: 1m -11,7% · 3m -12,3% · 12m +13,8% · RSI 24 · vol 21d 19% · regime HMM: Alta (100%)
+
+Horizonte  P(alta)  Ret. mediano  Faixa P10–P90 (R$)      Vol prevista  Confiança   Acerto histórico na faixa
+─────────  ───────  ────────────  ──────────────────  ────────────────  ──────────  ─────────────────────────
+1 dia         51%*         -0,1%  62,68 – 65,47        1,8% (28% a.a.)  Baixa (29)  49% (n=2465, n ef.≈2465) 
+1 semana      54%*         -0,0%  60,71 – 67,79        4,0% (28% a.a.)  Baixa (36)  53% (n=2272, n ef.≈454)  
+2 semanas     55%*         +0,4%  58,84 – 70,23        5,7% (29% a.a.)  Baixa (39)  54% (n=1700, n ef.≈170)  
+1 mês         54%*         +1,3%  55,61 – 74,61        8,3% (29% a.a.)  Baixa (39)  55% (n=2319, n ef.≈110)  
+3 meses       57%*         +2,4%  52,45 – 84,20       14,9% (30% a.a.)  Baixa (33)  52% (n=2340, n ef.≈37)   
+6 meses       56%*         +3,9%  43,52 – 109,40      21,8% (31% a.a.)  Baixa (33)  49% (n=2214, n ef.≈17)   
+
+* Sem vantagem estatística sobre o acaso em: 1 dia, 1 semana, 2 semanas, 1 mês, 3 meses, 6 meses. Nesses prazos a probabilidade
+  não deve ser lida como previsão de direção; a faixa de preço e a volatilidade continuam validadas.
+
+Validação walk-forward (fora da amostra) contra os baselines
+
+Horizonte      n  AUC ens.  BSS ens.  melhor baseline (BSS)  DM p (vs taxa base)  binomial p  Cobertura 80%  QLIKE GARCH / hist.  Backtest Sharpe (estr. / B&H)
+─────────  ─────  ────────  ────────  ─────────────────────  ───────────────────  ──────────  ─────────────  ───────────────────  ─────────────────────────────
+1 dia      2.465     0,487    -0,000              RW +0,001                 0,53        0,29          80,0%        1,552 / 1,587                    0,00 / 0,36
+1 semana   2.440     0,464    +0,002              RW +0,003                 0,34        0,40          79,8%        0,459 / 0,495                   -0,02 / 0,40
+2 semanas  2.435     0,468    +0,007              RW +0,005                 0,10        0,09          79,6%        0,320 / 0,361                    0,02 / 0,40
+1 mês      2.424     0,424    +0,013              RW +0,019                 0,17        0,03          80,1%        0,256 / 0,312                   -0,04 / 0,40
+3 meses    2.340     0,383    -0,008              RW +0,020                 0,63        0,56          80,2%        0,254 / 0,332                    0,09 / 0,34
+6 meses    2.214     0,288    -0,011              RW +0,036                 0,75        0,66          84,7%        0,198 / 0,309                    0,06 / 0,40
+
+BSS = Brier skill score contra a taxa base (>0 = melhor). DM p < 0,05 = vantagem estatística.
+QLIKE menor = previsão de volatilidade melhor. n ef. = observações independentes (n / horizonte).
+
+Avisos dos dados:
+  - 1 picos isolados (salto e reversão no dia seguinte) removidos como erro de dado
+  - 5 retornos diários acima de 8 desvios robustos (mantidos; confira eventos)
+
+Tempo de análise: 50 s. Ferramenta educacional, não é recomendação de investimento.

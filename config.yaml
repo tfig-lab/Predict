@@ -1,0 +1,111 @@
+# Configuração do analisador. Todos os parâmetros do modelo, da validação e do score ficam aqui.
+# CONGELADO para a rodada final de avaliação (PETR4, VALE3, ITUB4, AAPL): não ajustar para "parecer bom".
+
+semente: 42
+n_jobs: -1                     # -1 = todos os núcleos (os horizontes rodam em paralelo)
+
+dados:
+  inicio: null                 # null = usa os últimos `anos_maximos` do histórico máximo baixado
+  anos_maximos: 15             # janela de análise (desempenho + relevância de regime); --inicio sobrepõe
+  anos_minimos: 10             # avisa se houver menos que isso
+  pregoes_minimos: 1000        # abaixo disso a análise é recusada
+  pasta_cache: cache
+  tolerancia_reajuste: 0.001   # diferença relativa no trecho sobreposto que força novo download completo
+  salto_sigma: 8.0             # retorno diário acima de N desvios robustos gera aviso
+  lacuna_dias_corridos: 7      # lacuna maior que isso entre pregões gera aviso
+  defasagem_ipca_dias: 45      # IPCA do mês M só é conhecido ~10 dias após o fim do mês
+  mercados:
+    B3:
+      indice: "^BVSP"
+      macro: ["BRL=X", "^VIX", "^TNX"]
+      bcb: true                # Selic (SGS 432) e IPCA (SGS 433)
+      caixa: selic             # rendimento do caixa no backtest
+    EUA:
+      indice: "^GSPC"
+      macro: ["^VIX", "^TNX"]
+      bcb: false
+      caixa: "^IRX"            # T-bill de 13 semanas
+
+horizontes: [1, 5, 10, 21, 63, 126]
+nomes_horizontes:
+  1: "1 dia"
+  5: "1 semana"
+  10: "2 semanas"
+  21: "1 mês"
+  63: "3 meses"
+  126: "6 meses"
+quantis: [0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95]
+
+walkforward:
+  treino_minimo: 756           # ~3 anos antes da primeira previsão fora da amostra
+  passo: 21                    # retreino a cada ~1 mês
+  passo_rapido: 63
+  passo_quantis: 126           # regressões quantílicas (alvo já padronizado pela vol GARCH diária) e modelo relativo
+  embargo: h                   # "h" = embargo igual ao horizonte, além da purga dos rótulos sobrepostos
+  reselecao_hiper: 252         # CV aninhada de hiperparâmetros a cada ~1 ano
+
+garch:
+  variantes: [GARCH, GJR, EGARCH]
+  distribuicao: t
+  reajuste: 63
+  reespecificacao: 252
+  janela_minima: 500
+
+hmm:
+  estados: [2, 3]
+  reajuste: 126                # reajuste rápido (warm start) dos parâmetros
+  reespecificacao: 504         # nova escolha do nº de estados por BIC, com várias inicializações
+  iteracoes: 200
+  inicializacoes: 3
+  janela_minima: 500
+
+lgbm:
+  grade:
+    - {num_leaves: 7, min_child_samples: 200, learning_rate: 0.03, reg_lambda: 5.0}
+    - {num_leaves: 15, min_child_samples: 100, learning_rate: 0.03, reg_lambda: 5.0}
+    - {num_leaves: 7, min_child_samples: 100, learning_rate: 0.05, reg_lambda: 20.0}
+  comum: {n_estimators: 500, subsample: 0.7, subsample_freq: 1, colsample_bytree: 0.7, verbose: -1}
+  early_stopping: 30
+  fracao_validacao: 0.2
+  quantil: {n_estimators: 100, num_leaves: 7, min_child_samples: 150, learning_rate: 0.075, subsample: 0.7, subsample_freq: 1, colsample_bytree: 0.7, reg_lambda: 5.0, verbose: -1}
+
+montecarlo:
+  simulacoes: 10000
+  bloco: 21                    # tamanho do bloco no bootstrap de resíduos
+
+ensemble:
+  janela_perda: 252            # pregões realizados usados para pesar os modelos
+  minimo_realizado: 63         # antes disso, pesos iguais
+
+calibracao:
+  aquecimento: 252             # previsões fora da amostra realizadas antes de calibrar
+  minimo_isotonica: 300        # observações EFETIVAS (linhas / h); abaixo disso usa Platt
+  n0_encolhimento: 50          # κ = n_ef/(n_ef+n0): com pouca evidência independente, a calibração quase não mexe
+
+conformal:
+  gamma_aci: 0.005
+  janela: 504                  # mínimo de linhas na janela de pontuações
+  janela_efetiva: 24           # ... e pelo menos 24 observações independentes: janela = max(504, 24·h)
+
+score:
+  pesos: {desempenho: 0.40, forca: 0.25, concordancia: 0.15, estabilidade: 0.20}
+  escala_bss: 0.05             # BSS de 5% sobre a taxa base = nota máxima em (a)
+  escala_forca: 0.15           # |p - taxa base| de 15 p.p. = nota máxima em (b)
+  alfa: 0.05                   # nível do teste de Diebold-Mariano
+  teto_sem_significancia: 39
+  faixas: {Baixa: 0, Média: 40, Alta: 70}
+
+backtest:
+  limiar: 0.55
+  custo_operacao: 0.0008       # emolumentos + slippage por operação (0,08%)
+  execucao_defasagem: 1        # sinal no fechamento de t, execução no fechamento de t+1
+
+fundacionais:
+  ativo: false
+  modelo: "amazon/chronos-bolt-small"
+  contexto: 512
+  passo_origens: 21
+
+relatorio:
+  pasta: relatorios
+  anos_grafico: 3

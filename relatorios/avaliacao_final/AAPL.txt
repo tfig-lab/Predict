@@ -1,0 +1,34 @@
+
+Apple Inc. (AAPL) · USD 343,99 em 21/10/2026
+Retornos: 1m +1,2% · 3m +7,0% · 12m +31,7% · RSI 61 · vol 21d 17% · regime HMM: Alta (100%)
+
+Horizonte  P(alta)  Ret. mediano  Faixa P10–P90 (USD)      Vol prevista  Confiança   Acerto histórico na faixa
+─────────  ───────  ────────────  ───────────────────  ────────────────  ──────────  ─────────────────────────
+1 dia         52%*         +0,1%  338,91 – 349,26       1,3% (20% a.a.)  Baixa (31)  53% (n=2510, n ef.≈2510) 
+1 semana      56%*         +0,4%  330,60 – 359,64       2,9% (20% a.a.)  Baixa (32)  59% (n=2485, n ef.≈497)  
+2 semanas     59%*         +1,1%  327,53 – 365,18       4,1% (21% a.a.)  Baixa (31)  61% (n=2480, n ef.≈248)  
+1 mês         62%*         +2,2%  324,20 – 378,30       6,2% (22% a.a.)  Baixa (31)  63% (n=2469, n ef.≈117)  
+3 meses       69%*         +6,5%  320,54 – 400,83      11,7% (23% a.a.)  Baixa (32)  71% (n=2385, n ef.≈37)   
+6 meses       72%*        +11,5%  308,86 – 453,84      17,3% (24% a.a.)  Baixa (39)  78% (n=2259, n ef.≈17)   
+
+* Sem vantagem estatística sobre o acaso em: 1 dia, 1 semana, 2 semanas, 1 mês, 3 meses, 6 meses. Nesses prazos a probabilidade
+  não deve ser lida como previsão de direção; a faixa de preço e a volatilidade continuam validadas.
+
+Validação walk-forward (fora da amostra) contra os baselines
+
+Horizonte      n  AUC ens.  BSS ens.  melhor baseline (BSS)  DM p (vs taxa base)  binomial p  Cobertura 80%  QLIKE GARCH / hist.  Backtest Sharpe (estr. / B&H)
+─────────  ─────  ────────  ────────  ─────────────────────  ───────────────────  ──────────  ─────────────  ───────────────────  ─────────────────────────────
+1 dia      2.510     0,481    -0,001              RW -0,001                 0,93        0,65          79,9%        1,586 / 1,712                    0,00 / 0,94
+1 semana   2.485     0,492    -0,000        Momentum +0,000                 0,53        0,74          80,0%        0,457 / 0,566                    0,74 / 0,96
+2 semanas  2.480     0,448    -0,003        Momentum +0,006                 0,82        0,48          80,0%        0,340 / 0,441                    0,88 / 0,96
+1 mês      2.469     0,437    -0,010        Momentum +0,010                 0,87        0,90          79,9%        0,281 / 0,394                    0,88 / 0,96
+3 meses    2.385     0,303    -0,018        Momentum +0,008                 0,93        0,60          81,3%        0,290 / 0,469                    0,92 / 0,94
+6 meses    2.259     0,451    -0,025              RW -0,004                 0,77        0,63          78,5%        0,259 / 0,433                    0,88 / 0,90
+
+BSS = Brier skill score contra a taxa base (>0 = melhor). DM p < 0,05 = vantagem estatística.
+QLIKE menor = previsão de volatilidade melhor. n ef. = observações independentes (n / horizonte).
+
+Avisos dos dados:
+  - 18 retornos diários acima de 8 desvios robustos (mantidos; confira eventos)
+
+Tempo de análise: 47 s. Ferramenta educacional, não é recomendação de investimento.

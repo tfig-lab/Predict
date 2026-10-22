@@ -1,0 +1,35 @@
+
+Itaú Unibanco Holding S.A. (ITUB4.SA) · R$ 48,90 em 21/10/2026
+Retornos: 1m +13,6% · 3m +14,1% · 12m +45,4% · RSI 65 · vol 21d 43% · regime HMM: Queda (100%)
+
+Horizonte  P(alta)  Ret. mediano  Faixa P10–P90 (R$)      Vol prevista  Confiança   Acerto histórico na faixa
+─────────  ───────  ────────────  ──────────────────  ────────────────  ──────────  ─────────────────────────
+1 dia         50%*         +0,0%  47,89 – 49,93        1,8% (29% a.a.)  Baixa (32)  51% (n=2466, n ef.≈2466) 
+1 semana      52%*         +0,2%  46,48 – 51,66        4,1% (29% a.a.)  Baixa (36)  54% (n=2441, n ef.≈488)  
+2 semanas     54%*         +0,5%  44,69 – 54,01        5,7% (29% a.a.)  Baixa (37)  55% (n=2436, n ef.≈243)  
+1 mês         57%*         +1,1%  43,04 – 56,54        8,3% (29% a.a.)  Baixa (39)  57% (n=2341, n ef.≈111)  
+3 meses       60%*         +3,7%  43,46 – 59,01       14,3% (29% a.a.)  Baixa (39)  59% (n=2280, n ef.≈36)   
+6 meses       73%*         +6,5%  40,84 – 63,95       20,1% (28% a.a.)  Baixa (36)  74% (n=2215, n ef.≈17)   
+
+* Sem vantagem estatística sobre o acaso em: 1 dia, 1 semana, 2 semanas, 1 mês, 3 meses, 6 meses. Nesses prazos a probabilidade
+  não deve ser lida como previsão de direção; a faixa de preço e a volatilidade continuam validadas.
+
+Validação walk-forward (fora da amostra) contra os baselines
+
+Horizonte      n  AUC ens.  BSS ens.  melhor baseline (BSS)  DM p (vs taxa base)  binomial p  Cobertura 80%  QLIKE GARCH / hist.  Backtest Sharpe (estr. / B&H)
+─────────  ─────  ────────  ────────  ─────────────────────  ───────────────────  ──────────  ─────────────  ───────────────────  ─────────────────────────────
+1 dia      2.466     0,502    -0,000              RW +0,000                 0,60        0,24          79,5%        1,427 / 1,493                    0,00 / 0,34
+1 semana   2.441     0,474    -0,004              RW +0,001                 0,88        0,42          79,2%        0,397 / 0,470                   -0,17 / 0,37
+2 semanas  2.436     0,465    -0,002              RW +0,000                 0,78        0,45          79,1%        0,276 / 0,357                    0,25 / 0,37
+1 mês      2.425     0,518    +0,005              RW -0,001                 0,23        0,25          79,2%        0,214 / 0,309                    0,18 / 0,37
+3 meses    2.341     0,545    +0,006        Momentum -0,006                 0,25        0,81          81,8%        0,182 / 0,307                    0,26 / 0,30
+6 meses    2.215     0,405    -0,033        Momentum -0,018                 0,89        0,26          82,8%        0,164 / 0,294                    0,35 / 0,35
+
+BSS = Brier skill score contra a taxa base (>0 = melhor). DM p < 0,05 = vantagem estatística.
+QLIKE menor = previsão de volatilidade melhor. n ef. = observações independentes (n / horizonte).
+
+Avisos dos dados:
+  - 1 pregões com máxima/mínima incoerentes (ajustados)
+  - 3 retornos diários acima de 8 desvios robustos (mantidos; confira eventos)
+
+Tempo de análise: 53 s. Ferramenta educacional, não é recomendação de investimento.

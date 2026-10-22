@@ -1,0 +1,1 @@
+"""Analisador preditivo de ações."""

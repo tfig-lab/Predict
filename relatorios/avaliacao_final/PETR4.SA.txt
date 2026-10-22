@@ -1,0 +1,36 @@
+
+Petróleo Brasileiro S.A. - Petrobras (PETR4.SA) · R$ 57,75 em 21/10/2026
+Retornos: 1m +20,3% · 3m +39,9% · 12m +113,0% · RSI 68 · vol 21d 39% · regime HMM: Alta (100%)
+
+Horizonte  P(alta)  Ret. mediano  Faixa P10–P90 (R$)      Vol prevista  Confiança   Acerto histórico na faixa
+─────────  ───────  ────────────  ──────────────────  ────────────────  ──────────  ─────────────────────────
+1 dia         52%*         +0,2%  56,25 – 59,30        2,3% (37% a.a.)  Baixa (35)  52% (n=2464, n ef.≈2464) 
+1 semana      55%*         +0,6%  54,23 – 61,70        5,2% (37% a.a.)  Baixa (34)  56% (n=2418, n ef.≈483)  
+2 semanas     57%*         +0,7%  52,24 – 65,02        7,4% (37% a.a.)  Baixa (39)  59% (n=1720, n ef.≈172)  
+1 mês         59%*         +1,3%  48,16 – 70,43       10,7% (37% a.a.)  Baixa (35)  59% (n=2423, n ef.≈115)  
+3 meses       63%*         +2,9%  44,45 – 78,11       18,6% (37% a.a.)  Baixa (36)  66% (n=2339, n ef.≈37)   
+6 meses       69%*         +9,0%  36,84 – 103,95      26,5% (37% a.a.)  Baixa (36)  66% (n=2213, n ef.≈17)   
+
+* Sem vantagem estatística sobre o acaso em: 1 dia, 1 semana, 2 semanas, 1 mês, 3 meses, 6 meses. Nesses prazos a probabilidade
+  não deve ser lida como previsão de direção; a faixa de preço e a volatilidade continuam validadas.
+
+Validação walk-forward (fora da amostra) contra os baselines
+
+Horizonte      n  AUC ens.  BSS ens.  melhor baseline (BSS)  DM p (vs taxa base)  binomial p  Cobertura 80%  QLIKE GARCH / hist.  Backtest Sharpe (estr. / B&H)
+─────────  ─────  ────────  ────────  ─────────────────────  ───────────────────  ──────────  ─────────────  ───────────────────  ─────────────────────────────
+1 dia      2.464     0,496    -0,000        Momentum -0,000                 0,74        0,66          79,5%        1,569 / 1,708                    0,00 / 0,68
+1 semana   2.439     0,469    -0,003        Momentum -0,002                 0,77        0,47          79,5%        0,528 / 0,680                    0,26 / 0,70
+2 semanas  2.434     0,466    +0,007        Momentum -0,002                 0,05        0,71          79,1%        0,416 / 0,593                    0,66 / 0,70
+1 mês      2.423     0,465    -0,004        Momentum -0,005                 0,93        0,60          79,1%        0,395 / 0,608                    0,36 / 0,70
+3 meses    2.339     0,483    -0,001              RW -0,034                 0,55        0,45          79,7%        0,359 / 0,627                    0,75 / 0,70
+6 meses    2.213     0,367    -0,013              RW -0,083                 0,72        0,68          83,5%        0,296 / 0,596                    0,64 / 0,77
+
+BSS = Brier skill score contra a taxa base (>0 = melhor). DM p < 0,05 = vantagem estatística.
+QLIKE menor = previsão de volatilidade melhor. n ef. = observações independentes (n / horizonte).
+
+Avisos dos dados:
+  - 1 pregões com máxima/mínima incoerentes (ajustados)
+  - 2 picos isolados (salto e reversão no dia seguinte) removidos como erro de dado
+  - 6 retornos diários acima de 8 desvios robustos (mantidos; confira eventos)
+
+Tempo de análise: 46 s. Ferramenta educacional, não é recomendação de investimento.

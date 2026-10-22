@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITULO__ · Analisador preditivo</title>
+<script>/*__PLOTLY__*/</script>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --border: rgba(11,11,11,0.10);
+  --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --track: #f0efec;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --up: #2a78d6; --down: #e34948; --neutral: #898781;
+  --warn-bg: #fff6e0; --warn-ink: #6b4a00; --ok-ink: #006300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --border: rgba(255,255,255,0.10);
+    --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --track: #383835;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --up: #3987e5; --down: #e66767; --neutral: #898781;
+    --warn-bg: #2e2510; --warn-ink: #f3d48a; --ok-ink: #0ca30c;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --border: rgba(255,255,255,0.10);
+  --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --track: #383835;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --up: #3987e5; --down: #e66767; --neutral: #898781;
+  --warn-bg: #2e2510; --warn-ink: #f3d48a; --ok-ink: #0ca30c;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 28px 20px 64px; }
+h1 { font-size: 27px; margin: 0; letter-spacing: -0.01em; }
+.sub { color: var(--ink-2); margin-top: 2px; }
+.topo { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 26px; margin: 16px 0 4px; }
+.topo .valor { font-size: 38px; font-weight: 650; }
+.stat { color: var(--ink-2); font-size: 14px; }
+.stat b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+section.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-top: 18px; }
+section.panel > h2 { font-size: 17px; margin: 0 0 4px; }
+section.panel > h2 .num { color: var(--muted); font-weight: 500; margin-right: 6px; }
+.nota { color: var(--muted); font-size: 13px; margin: 0 0 12px; max-width: 80ch; }
+.resumo p { margin: 0 0 10px; max-width: 85ch; }
+.aviso { background: var(--warn-bg); color: var(--warn-ink); font-size: 13px; padding: 10px 12px; border-radius: 8px; margin-top: 10px; }
+.aviso ul { margin: 4px 0 0; padding-left: 18px; }
+.chart { width: 100%; height: 420px; }
+.chart.medio { height: 360px; }
+.chart.baixo { height: 300px; }
+.tabela { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th { color: var(--muted); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+tr.destaque td { font-weight: 600; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-2); }
+.badge i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.meter { width: 90px; height: 6px; border-radius: 3px; background: var(--track); display: inline-block; vertical-align: middle; margin-right: 8px; overflow: hidden; }
+.meter > i { display: block; height: 100%; border-radius: 3px; background: var(--ink-2); }
+.seletor { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--page); padding: 12px 0 8px; margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.seletor span { color: var(--ink-2); font-size: 14px; margin-right: 4px; }
+.seletor button { font: inherit; font-size: 13.5px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); cursor: pointer; }
+.seletor button[aria-pressed="true"] { background: var(--ink); color: var(--page); border-color: var(--ink); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+.legenda { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+.legenda i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; font-size: 14px; }
+.kv dt { color: var(--ink-2); }
+.kv dd { margin: 0; font-variant-numeric: tabular-nums; }
+.disclaimer { color: var(--muted); font-size: 13px; margin-top: 22px; }
+@media (max-width: 560px) { .topo .valor { font-size: 30px; } .chart { height: 320px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="titulo"></h1>
+    <div class="sub" id="subtitulo"></div>
+    <div class="topo" id="topo"></div>
+  </header>
+
+  <section class="panel resumo"><h2><span class="num">1</span>Resumo executivo</h2><div id="resumo"></div><div id="avisos"></div></section>
+
+  <section class="panel">
+    <h2><span class="num">2</span>Preço, médias móveis e regimes de mercado (HMM)</h2>
+    <p class="nota">Fundo colorido: regime estimado pelo Hidden Markov Model em cada dia, usando apenas dados até aquele dia (probabilidade filtrada).</p>
+    <div class="chart" id="gPreco"></div>
+    <div class="legenda" id="legRegime"></div>
+    <div class="grid2" style="margin-top:14px"><div id="hmmProbs"></div><div class="tabela"><table id="hmmTrans"></table></div></div>
+  </section>
+
+  <section class="panel">
+    <h2><span class="num">3</span>Simulação Monte Carlo: próximos 6 meses</h2>
+    <p class="nota" id="notaMC"></p>
+    <div class="chart" id="gLeque"></div>
+    <div class="tabela"><table id="tMC"></table></div>
+  </section>
+
+  <section class="panel">
+    <h2><span class="num">4</span>Previsões por horizonte</h2>
+    <p class="nota">Faixas ajustadas por conformal prediction. "Acerto na faixa" = taxa de acerto direcional histórica nas vezes em que a confiança esteve na mesma faixa de hoje.</p>
+    <div class="tabela"><table id="tPrev"></table></div>
+  </section>
+
+  <section class="panel">
+    <h2><span class="num">5</span>Volatilidade: GARCH, histórica e prevista</h2>
+    <p class="nota" id="notaVol"></p>
+    <div class="chart medio" id="gVol"></div>
+    <div class="tabela"><table id="tVol"></table></div>
+  </section>
+
+  <div class="seletor" id="seletor"><span>Horizonte para as seções 6 a 9:</span></div>
+
+  <section class="panel">
+    <h2><span class="num">6</span>Diagrama de confiabilidade e cobertura dos intervalos</h2>
+    <p class="nota">Quando o modelo diz X% de chance de alta, com que frequência a ação de fato subiu (fora da amostra)? Perto da diagonal = probabilidades confiáveis.</p>
+    <div class="grid2"><div class="chart baixo" id="gCalib"></div><div class="tabela"><table id="tCob"></table></div></div>
+  </section>
+
+  <section class="panel">
+    <h2><span class="num">7</span>Walk-forward contra os baselines</h2>
+    <p class="nota" id="notaWF"></p>
+    <div class="tabela"><table id="tModelos"></table></div>
+    <div class="tabela"><table id="tTestes"></table></div>
+  </section>
+
+  <section class="panel">
+    <h2><span class="num">8</span>Backtest com custos vs. buy-and-hold</h2>
+    <p class="nota" id="notaBT"></p>
+    <div class="chart medio" id="gBT"></div>
+    <div class="tabela"><table id="tBT"></table></div>
+  </section>
+
+  <section class="panel">
+    <h2><span class="num">9</span>O que pesou na previsão</h2>
+    <p class="nota">Importância SHAP do LightGBM (direção) nos últimos 2 anos e contribuição de cada variável na previsão de hoje. Ao lado, os pesos atuais do ensemble e os componentes do score.</p>
+    <div class="grid2"><div class="chart medio" id="gShap"></div><div class="chart medio" id="gShapLocal"></div></div>
+    <div class="grid2" style="margin-top:8px"><div class="tabela"><table id="tPesos"></table></div><div class="tabela"><table id="tScore"></table></div></div>
+  </section>
+
+  <section class="panel"><h2><span class="num">10</span>Aviso</h2>
+    <p>Ferramenta estatística <b>educacional</b>. <b>Não é recomendação de investimento.</b> O modelo usa apenas preços, volume e indicadores de mercado; não enxerga notícias, balanços, eventos corporativos ou mudanças estruturais futuras. Desempenho passado, mesmo validado fora da amostra, não garante desempenho futuro.</p>
+    <p class="disclaimer" id="rodape"></p>
+  </section>
+</div>
+
+<script>
+const D = __DADOS__;
+const $ = id => document.getElementById(id);
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmtN = (x, d = 2) => x == null ? "—" : x.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const pct = (x, d = 1, s = false) => x == null ? "—" : (s && x > 0 ? "+" : "") + (x * 100).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d }) + "%";
+const pv = x => x == null ? "—" : (x < 0.001 ? "<0,001" : fmtN(x, 3));
+const moeda = D.info.moeda === "BRL" ? "R$" : (D.info.moeda || "");
+const H = D.horizontes;
+let sel = H.findIndex(h => h.h === 21); if (sel < 0) sel = 0;
+
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function tabela(id, cab, linhas, numericas = []) {
+  $(id).innerHTML = "<thead><tr>" + cab.map((c, i) => `<th class="${numericas.includes(i) ? "n" : ""}">${c}</th>`).join("") + "</tr></thead><tbody>" +
+    linhas.map(l => `<tr class="${l.destaque ? "destaque" : ""}">` + l.cel.map((c, i) => `<td class="${numericas.includes(i) ? "n" : ""}">${c}</td>`).join("") + "</tr>").join("") + "</tbody>";
+}
+function layout(extra = {}) {
+  const ink2 = css("--ink-2"), grid = css("--grid"), axis = css("--axis"), muted = css("--muted");
+  const eixo = { gridcolor: grid, linecolor: axis, zeroline: false, tickfont: { color: muted }, title: { font: { size: 12, color: ink2 } } };
+  return Object.assign({
+    paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+    font: { family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: ink2, size: 12 },
+    margin: { l: 60, r: 16, t: 10, b: 40 }, legend: { orientation: "h", y: 1.1, x: 0 },
+    xaxis: { ...eixo }, yaxis: { ...eixo },
+    hoverlabel: { bgcolor: css("--surface"), bordercolor: css("--axis"), font: { color: css("--ink") } },
+  }, extra);
+}
+const CFG = { displayModeBar: false, responsive: true };
+const nomeRegime = (e, k) => e == null ? null : (e === 0 ? "Queda" : (e === k - 1 ? "Alta" : "Lateral"));
+
+// ---------------------------------------------------------------- cabeçalho e resumo
+const t = D.tecnico;
+$("titulo").textContent = `${D.info.nome} (${D.ticker})`;
+$("subtitulo").textContent = [D.info.setor, `Referência: ${D.indice}`, `Último pregão: ${D.data}`].filter(Boolean).join(" · ");
+$("topo").innerHTML = `<span class="valor">${moeda} ${fmtN(D.preco)}</span>
+  <span class="stat">1 mês <b>${pct(t.ret_1m, 1, true)}</b></span><span class="stat">3 meses <b>${pct(t.ret_3m, 1, true)}</b></span>
+  <span class="stat">12 meses <b>${pct(t.ret_12m, 1, true)}</b></span><span class="stat">vs. média 200d <b>${pct(t.dist_mm200, 1, true)}</b></span>
+  <span class="stat">RSI <b>${Math.round(t.rsi)}</b></span><span class="stat">Vol. 21d <b>${pct(t.vol_21, 0)}</b> a.a.</span>
+  <span class="stat">Regime <b>${esc(D.hmm.atual)}</b></span>`;
+$("resumo").innerHTML = D.resumo.map(f => `<p>${esc(f)}</p>`).join("");
+let av = "";
+if (Object.keys(D.fundamentos).length) {
+  const f = D.fundamentos, fm = (k, v) => ["Dividend yield", "ROE", "Margem líquida"].includes(k) ? pct(v, 1) : fmtN(v, 1);
+  av += `<div class="aviso"><b>Fundamentos (contexto):</b> ${Object.entries(f).map(([k, v]) => `${esc(k)} ${fm(k, v)}`).join(" · ")}.
+    São valores ATUAIS, não históricos; por isso não entram no modelo nem no backtest (seria look-ahead).</div>`;
+}
+if (D.avisos.length) av += `<div class="aviso"><b>Avisos dos dados:</b><ul>${D.avisos.map(a => `<li>${esc(a)}</li>`).join("")}</ul></div>`;
+$("avisos").innerHTML = av;
+
+// ---------------------------------------------------------------- tabelas estáticas
+function tabelasFixas() {
+  const nomes = D.hmm.nomes;
+  $("hmmProbs").innerHTML = `<dl class="kv">${nomes.map((n, i) => `<dt>P(regime ${esc(n.toLowerCase())})</dt><dd>${pct(D.hmm.probs[i], 0)} · retorno 5d médio ${pct(D.hmm.medias[i][0], 2, true)} · vol ${pct(D.hmm.medias[i][1], 0)} a.a.</dd>`).join("")}</dl>`;
+  tabela("hmmTrans", ["Transição (1 dia)", ...nomes.map(n => "→ " + n)],
+    D.hmm.transicao.map((l, i) => ({ cel: [esc(nomes[i]), ...l.map(v => pct(v, 1))] })), nomes.map((_, i) => i + 1));
+
+  const ev = D.mc.eventos;
+  tabela("tMC", ["Horizonte", "P(alta)", "P(subir > 10%)", "P(cair > 15%)", "P(alta) GARCH-t", "P(alta) bootstrap"],
+    H.map(h => { const e = ev[h.h]; return { cel: [esc(h.nome), pct(e.p_alta, 0), pct(e.p_mais_10, 0), pct(e.p_menos_15, 0), pct(e.p_alta_param, 0), pct(e.p_alta_bootstrap, 0)] }; }), [1, 2, 3, 4, 5]);
+  $("notaMC").textContent = `${D.mc.n.toLocaleString("pt-BR")} trajetórias: metade com inovações t de Student do GARCH-${D.garch.tipo}, metade por bootstrap em blocos dos resíduos históricos. A simulação usa só a deriva histórica; ela descreve a incerteza, não uma direção.`;
+
+  tabela("tPrev", ["Horizonte", "P(alta)", "P(superar índice)", "Retorno mediano", `Faixa 80% (${moeda})`, `Faixa 90% (${moeda})`, "Vol. no período", "Confiança", "Acerto na faixa"],
+    H.map(h => {
+      const p = h.hoje, f = h.faixas[p.rotulo] || {};
+      const dir = p.vantagem ? `<span class="badge"><i style="background:var(${p.p_alta >= 0.5 ? "--up" : "--down"})"></i>${p.p_alta >= 0.5 ? "▲" : "▼"} ${pct(p.p_alta, 0)}</span>`
+                             : `<span class="badge" title="${esc(p.mensagem)}">sem vantagem · base ${pct(p.p_base, 0)}</span>`;
+      return { cel: [esc(h.nome), dir, pct(p.p_indice, 0), pct(p.ret_mediano, 1, true),
+        `${fmtN(p.precos["0.1"])} – ${fmtN(p.precos["0.9"])}`, `${fmtN(p.precos["0.05"])} – ${fmtN(p.precos["0.95"])}`,
+        `${pct(p.vol, 1)} <span style="color:var(--muted)">(${pct(p.vol_anual, 0)} a.a.)</span>`,
+        `<span class="meter"><i style="width:${Math.max(2, p.score)}%"></i></span>${esc(p.rotulo)} (${Math.round(p.score)})`,
+        f.n ? `${pct(f.acerto, 0)} <span style="color:var(--muted)">(n=${f.n}, ef.≈${f.n_efetivo})</span>` : "—"] };
+    }), [2, 3, 4, 5, 6]);
+
+  $("notaVol").textContent = `Modelo escolhido por BIC: ${D.garch.tipo} com t de Student (ν = ${fmtN(D.garch.nu, 1)}), persistência ${fmtN(D.garch.persistencia, 3)}. ` +
+    `A linha GARCH é a previsão de 1 dia feita com parâmetros estimados só no passado. QLIKE: perda padrão para previsões de variância (menor = melhor).`;
+  tabela("tVol", ["Horizonte", "QLIKE GARCH", "QLIKE vol. histórica 63d", "Correlação GARCH × realizada", "Correlação histórica × realizada", "DM p (GARCH melhor)"],
+    H.map(h => ({ cel: [esc(h.nome), fmtN(h.vol.qlike_garch, 3), fmtN(h.vol.qlike_historica, 3), fmtN(h.vol.correl_garch, 2), fmtN(h.vol.correl_historica, 2), pv(h.vol.dm_garch_vs_historica.p_valor)] })), [1, 2, 3, 4, 5]);
+
+  $("seletor").innerHTML = '<span>Horizonte para as seções 6 a 9:</span>' + H.map((h, i) => `<button type="button" data-i="${i}" aria-pressed="${i === sel}">${esc(h.nome)}</button>`).join("");
+  $("seletor").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { sel = +b.dataset.i; tabelasFixas(); desenharHorizonte(); }));
+  $("rodape").textContent = `Gerado em ${D.gerado} · análise em ${Math.round(D.tempo)} s · retreino a cada ${D.config.passo} pregões${D.config.rapido ? " (modo rápido)" : ""}.`;
+}
+
+// ---------------------------------------------------------------- gráficos gerais
+function desenharGerais() {
+  const s = D.serie, s1 = css("--s1");
+  const shapes = [];
+  let ini = 0;
+  for (let i = 1; i <= s.datas.length; i++) {
+    const a = nomeRegime(s.estado[ini], s.k[ini]), b = i < s.datas.length ? nomeRegime(s.estado[i], s.k[i]) : null;
+    if (i === s.datas.length || a !== b) {
+      if (a) shapes.push({ type: "rect", xref: "x", yref: "paper", x0: s.datas[ini], x1: s.datas[Math.min(i, s.datas.length - 1)], y0: 0, y1: 1, layer: "below", line: { width: 0 },
+        fillcolor: hexA(css(a === "Alta" ? "--up" : a === "Queda" ? "--down" : "--neutral"), 0.13) });
+      ini = i;
+    }
+  }
+  const hov = moeda + " %{y:,.2f}<extra>%{fullData.name}</extra>";
+  Plotly.react("gPreco", [
+    { x: s.datas, y: s.mm200, name: "Média 200d", mode: "lines", line: { width: 2, color: css("--s3") }, hovertemplate: hov },
+    { x: s.datas, y: s.mm50, name: "Média 50d", mode: "lines", line: { width: 2, color: css("--s2") }, hovertemplate: hov },
+    { x: s.datas, y: s.close, name: "Preço", mode: "lines", line: { width: 2, color: s1 }, hovertemplate: hov },
+  ], layout({ shapes, hovermode: "x unified", yaxis: { ...layout().yaxis, tickprefix: moeda + " " } }), CFG);
+  $("legRegime").innerHTML = ["Alta", "Lateral", "Queda"].filter(n => D.hmm.nomes.includes(n) || n !== "Lateral")
+    .map(n => `<span><i style="background:${hexA(css(n === "Alta" ? "--up" : n === "Queda" ? "--down" : "--neutral"), 0.35)}"></i>Regime de ${n.toLowerCase()}</span>`).join("");
+
+  const L = D.leque, n0 = Math.max(0, s.datas.length - 126);
+  const banda = (lo, hi, a, nome) => [
+    { x: L.datas, y: L[hi], mode: "lines", line: { width: 0 }, hoverinfo: "skip", showlegend: false },
+    { x: L.datas, y: L[lo], mode: "lines", line: { width: 0 }, fill: "tonexty", fillcolor: hexA(s1, a), name: nome, hoverinfo: "skip" }];
+  Plotly.react("gLeque", [
+    ...banda("0.05", "0.95", 0.10, "90%"), ...banda("0.1", "0.9", 0.16, "80%"), ...banda("0.25", "0.75", 0.24, "50%"),
+    { x: L.datas, y: L["0.5"], name: "Mediana", mode: "lines", line: { width: 2, color: s1, dash: "dot" }, hovertemplate: hov },
+    { x: L.datas, y: L["0.05"], name: "P5", mode: "lines", line: { width: 0 }, showlegend: false, hovertemplate: hov },
+    { x: L.datas, y: L["0.95"], name: "P95", mode: "lines", line: { width: 0 }, showlegend: false, hovertemplate: hov },
+    { x: s.datas.slice(n0), y: s.close.slice(n0), name: "Preço (últimos 6 meses)", mode: "lines", line: { width: 2, color: css("--ink-2") }, hovertemplate: hov },
+  ], layout({ hovermode: "x unified", yaxis: { ...layout().yaxis, tickprefix: moeda + " " } }), CFG);
+
+  const V = D.vol;
+  Plotly.react("gVol", [
+    { x: V.datas, y: V.realizada, name: "Realizada 21d", mode: "lines", line: { width: 1.5, color: css("--s2") }, hovertemplate: "%{y:.1%}<extra>%{fullData.name}</extra>" },
+    { x: V.datas, y: V.garch, name: "GARCH (prevista 1 dia)", mode: "lines", line: { width: 2, color: css("--s1") }, hovertemplate: "%{y:.1%}<extra>%{fullData.name}</extra>" },
+    { x: V.futuro_datas, y: V.futuro, name: "GARCH: estrutura a termo", mode: "lines", line: { width: 2, color: css("--s1"), dash: "dot" }, hovertemplate: "%{y:.1%}<extra>%{fullData.name}</extra>" },
+  ], layout({ hovermode: "x unified", yaxis: { ...layout().yaxis, tickformat: ".0%", title: { text: "Volatilidade anualizada" } } }), CFG);
+}
+
+// ---------------------------------------------------------------- seções por horizonte
+function desenharHorizonte() {
+  const h = H[sel], s1 = css("--s1");
+  const c = h.calibracao;
+  Plotly.react("gCalib", [
+    { x: [0, 1], y: [0, 1], mode: "lines", line: { width: 1, color: css("--axis") }, name: "Calibração perfeita", hoverinfo: "skip" },
+    { x: c.map(b => b.previsto), y: c.map(b => b.realizado), customdata: c.map(b => b.n), mode: "lines+markers", name: "Ensemble calibrado",
+      line: { width: 2, color: s1 }, marker: { size: 9, color: s1, line: { width: 2, color: css("--surface") } },
+      hovertemplate: "Previsto %{x:.0%} → realizado %{y:.0%}<br>%{customdata} pregões<extra></extra>" },
+  ], layout({ showlegend: false, xaxis: { ...layout().xaxis, tickformat: ".0%", range: [0.2, 0.8], title: { text: "P(alta) prevista" } },
+    yaxis: { ...layout().yaxis, tickformat: ".0%", range: [0, 1], title: { text: "Frequência real de alta" } }, margin: { l: 60, r: 10, t: 10, b: 48 } }), CFG);
+  const q = k => h.quantis.find(m => m.chave === k);
+  tabela("tCob", ["Intervalo", "Nominal", "Ensemble bruto", "Com conformal"],
+    [["50% (P25–P75)", 0.5, "cobertura_50"], ["80% (P10–P90)", 0.8, "cobertura_80"], ["90% (P5–P95)", 0.9, "cobertura_90"]]
+      .map(([n, nom, k]) => ({ cel: [n, pct(nom, 0), pct(q("ensemble_bruto")[k], 1), `<b>${pct(q("ensemble_conformal")[k], 1)}</b>`] })), [1, 2, 3]);
+
+  $("notaWF").textContent = `${h.nome}: ${h.n.toLocaleString("pt-BR")} previsões fora da amostra (${h.periodo[0]} a ${h.periodo[1]}), ` +
+    `com retreino a cada ${D.config.passo} pregões, purga e embargo de ${h.h} pregões. Todas as linhas usam exatamente os mesmos dias.`;
+  const ordem = ["taxa_base", "passeio_aleatorio", "momentum", "garch", "lgbm", "ensemble_bruto", "ensemble"];
+  const qd = Object.fromEntries(h.quantis.map(m => [m.chave, m]));
+  tabela("tModelos", ["Modelo", "Acurácia", "Acur. balanceada", "AUC", "Brier", "Log loss", "BSS vs taxa base", "IC (Spearman)", "Pinball", "Cobertura 80%"],
+    ordem.map(k => h.modelos.find(m => m.chave === k)).filter(Boolean).map(m => {
+      const qq = qd[m.chave === "ensemble" ? "ensemble_conformal" : m.chave] || {};
+      return { destaque: m.chave === "ensemble", cel: [esc(m.nome), pct(m.acuracia, 1), pct(m.acuracia_balanceada, 1), fmtN(m.auc, 3), fmtN(m.brier, 4), fmtN(m.log_loss, 4),
+        pct(m.bss, 2, true), fmtN(m.ic, 3), fmtN(qq.pinball, 4), pct(qq.cobertura_80, 1)] };
+    }), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const T = h.testes;
+  const veredito = p => p < 0.05 ? `<span style="color:var(--ok-ink)">significativo</span>` : "não significativo";
+  const linhasT = [
+    ["Diebold-Mariano (Brier) vs. taxa base", T.dm_brier_vs_taxa_base],
+    ["Diebold-Mariano (Brier) vs. random walk", T.dm_brier_vs_random_walk],
+    ["Diebold-Mariano (Brier) vs. momentum", T.dm_brier_vs_momentum],
+    ["Diebold-Mariano (pinball) vs. random walk", T.dm_pinball_vs_random_walk],
+    ["Diebold-Mariano (pinball) vs. taxa base", T.dm_pinball_vs_taxa_base],
+  ].map(([n, r]) => ({ cel: [n, fmtN(r.estatistica, 2), pv(r.p_valor), veredito(r.p_valor)] }));
+  const B = T.binomial_vs_taxa_base;
+  linhasT.push({ cel: [`Binomial: acurácia ${pct(B.acuracia, 1)} vs. ${pct(B.p0, 1)} (n ef. = ${B.n_efetivo})`, "—", pv(B.p_valor), veredito(B.p_valor)] });
+  if (h.relativo) linhasT.push({ cel: [`Superar o índice: AUC ${fmtN(h.relativo.auc, 3)}, BSS ${pct(h.relativo.bss, 2, true)}`, "—", pv(h.relativo.dm_p), veredito(h.relativo.dm_p)] });
+  tabela("tTestes", ["Teste (H1: ensemble melhor)", "Estatística", "p-valor", "Resultado"], linhasT, [1, 2]);
+
+  const bt = h.backtest;
+  $("notaBT").textContent = `Comprado quando P(alta) calibrada em ${h.nome} > limiar; caso contrário, em caixa (${D.mercado === "B3" ? "Selic" : "T-bill"}). ` +
+    `Ordem executada no fechamento do pregão seguinte ao sinal, com custo por operação. Mesmo período fora da amostra do buy-and-hold.`;
+  Plotly.react("gBT", [
+    { x: bt.datas, y: bt.bh, name: "Buy-and-hold", mode: "lines", line: { width: 2, color: css("--s2") }, hovertemplate: "%{y:.2f}×<extra>%{fullData.name}</extra>" },
+    { x: bt.datas, y: bt.estr, name: "Estratégia do modelo", mode: "lines", line: { width: 2, color: s1 }, hovertemplate: "%{y:.2f}×<extra>%{fullData.name}</extra>" },
+  ], layout({ hovermode: "x unified", yaxis: { ...layout().yaxis, type: "log", title: { text: "Patrimônio (início = 1)" } } }), CFG);
+  const E = bt.estrategia, BH = bt.buy_and_hold;
+  tabela("tBT", ["", "CAGR", "Sharpe", "Sortino", "Máx. drawdown", "Vol. anual", "Operações", "Tempo comprado"],
+    [["Estratégia do modelo", E], ["Buy-and-hold", BH]].map(([n, x]) => ({ cel: [n, pct(x.cagr, 1, true), fmtN(x.sharpe, 2), fmtN(x.sortino, 2), pct(x.max_drawdown, 1), pct(x.vol_anual, 1), x.operacoes, pct(x.exposicao, 0)] })),
+    [1, 2, 3, 4, 5, 6, 7]);
+
+  const G = h.shap_global.slice().reverse();
+  Plotly.react("gShap", [{ type: "bar", orientation: "h", x: G.map(g => g.valor), y: G.map(g => g.nome), marker: { color: s1 },
+    hovertemplate: "%{y}: %{x:.4f}<extra></extra>" }], layout({ margin: { l: 230, r: 16, t: 28, b: 36 },
+    title: { text: "Importância média |SHAP|", font: { size: 13, color: css("--ink-2") }, x: 0 }, xaxis: { ...layout().xaxis } }), CFG);
+  const Lc = h.shap_local.slice().reverse();
+  Plotly.react("gShapLocal", [{ type: "bar", orientation: "h", x: Lc.map(g => g.valor), y: Lc.map(g => g.nome),
+    marker: { color: Lc.map(g => css(g.valor >= 0 ? "--up" : "--down")) }, customdata: Lc.map(g => g.x),
+    hovertemplate: "%{y}<br>contribuição %{x:+.4f} (log-odds)<br>valor atual %{customdata:.4f}<extra></extra>" }],
+    layout({ margin: { l: 230, r: 16, t: 28, b: 36 }, title: { text: "Previsão de hoje: azul favorece alta, vermelho favorece queda", font: { size: 13, color: css("--ink-2") }, x: 0 } }), CFG);
+  tabela("tPesos", ["Modelo", "Peso atual no ensemble"], Object.entries(h.hoje.pesos).map(([k, v]) => ({ cel: [esc(k), pct(v, 1)] })), [1]);
+  const C = h.hoje.componentes, nomesC = { desempenho: "(a) Desempenho comprovado (BSS)", forca: "(b) Força do sinal", concordancia: "(c) Concordância entre modelos", estabilidade: "(d) Estabilidade (regime + vol.)" };
+  const linhasS = Object.entries(C).map(([k, v]) => ({ cel: [nomesC[k] || k, pct(v, 0)] }));
+  linhasS.push({ destaque: true, cel: [`Score: ${Math.round(h.hoje.score)}/100 · ${esc(h.hoje.rotulo)}${h.hoje.vantagem ? "" : " (limitado: sem vantagem estatística)"}`, ""] });
+  tabela("tScore", ["Componente do score", "Nota"], linhasS, [1]);
+}
+
+function tudo() { tabelasFixas(); desenharGerais(); desenharHorizonte(); }
+tudo();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", tudo);
+new MutationObserver(tudo).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+</script>
+</body>
+</html>
